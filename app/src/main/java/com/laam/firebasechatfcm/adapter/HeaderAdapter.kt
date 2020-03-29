@@ -12,7 +12,7 @@ import com.laam.firebasechatfcm.ui.DetailChatActivity
 import kotlinx.android.synthetic.main.item_header.view.*
 
 class HeaderAdapter(
-    private val list: List<HeaderResponse>
+    private var list: List<HeaderResponse>
 ) : RecyclerView.Adapter<HeaderAdapter.ViewHolder>() {
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view)
 
@@ -37,5 +37,10 @@ class HeaderAdapter(
                 holder.itemView.context.startActivity(this)
             }
         }
+    }
+
+    fun updateList(list: List<HeaderResponse>) {
+        this.list = list
+        notifyDataSetChanged()
     }
 }

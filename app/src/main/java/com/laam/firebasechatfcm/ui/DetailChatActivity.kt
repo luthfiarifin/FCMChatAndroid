@@ -93,8 +93,15 @@ class DetailChatActivity : AppCompatActivity() {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(messageEvent: MessageEvent) {
-        Toast.makeText(this, "msg : ${messageEvent.data}", Toast.LENGTH_SHORT).show()
+        if(messageEvent.data["type"] == "personal_message"){
+            Toast.makeText(this, "msg : ${messageEvent.data}", Toast.LENGTH_SHORT).show()
+            refreshRv()
+        }
+    }
 
-        refreshRv()
+    override fun onDestroy() {
+        super.onDestroy()
+
+        EventBus.getDefault().unregister(this)
     }
 }
