@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "733186491929",
+    "firebase_url": "https://fir-chatfcm.firebaseio.com",
+    "project_id": "fir-chatfcm",
+    "storage_bucket": "fir-chatfcm.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:733186491929:android:444509db62d54070404c88",
+        "android_client_info": {
+          "package_name": "com.laam.firebasechatfcm"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "733186491929-et7f7gb81jr5af9i673d2v5jqg4hjbjs.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBX_TPnbiBxi3PE3H0SukxPFlu7LyJq30M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "733186491929-et7f7gb81jr5af9i673d2v5jqg4hjbjs.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
