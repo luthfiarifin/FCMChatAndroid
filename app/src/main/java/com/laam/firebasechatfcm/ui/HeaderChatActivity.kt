@@ -58,10 +58,8 @@ class HeaderChatActivity : AppCompatActivity() {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(messageEvent: MessageEvent) {
-        if (messageEvent.data["type"] == "personal_message") {
-            Toast.makeText(this, "msg : ${messageEvent.data}", Toast.LENGTH_SHORT).show()
-            refreshRv()
-        }
+        Toast.makeText(this, "msg : ${messageEvent.data}", Toast.LENGTH_SHORT).show()
+        refreshRv()
     }
 
     override fun onDestroy() {

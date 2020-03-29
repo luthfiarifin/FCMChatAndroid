@@ -4,6 +4,8 @@ import com.laam.firebasechatfcm.response.DetailResponse
 import com.laam.firebasechatfcm.response.HeaderResponse
 import com.laam.firebasechatfcm.response.SendMessageResponse
 import com.laam.firebasechatfcm.response.UpdateTokenResponse
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -20,11 +22,19 @@ interface Api {
     ): Call<List<DetailResponse>>
 
     @FormUrlEncoded
-    @POST("detailchatperson/send_message")
+    @POST("detailchatperson/send_message/{header}/{sender}")
     fun sendMessage(
         @Field("message") message: String,
-        @Field("header") header: Int,
-        @Field("sender") sender: Int
+        @Path("header") header: Int,
+        @Path("sender") sender: Int
+    ): Call<SendMessageResponse>
+
+    @Multipart
+    @POST("detailchatperson/send_message/{header}/{sender}")
+    fun sendMessageWithImage(
+        @Part image: MultipartBody.Part,
+        @Path("header") header: Int,
+        @Path("sender") sender: Int
     ): Call<SendMessageResponse>
 
     @FormUrlEncoded

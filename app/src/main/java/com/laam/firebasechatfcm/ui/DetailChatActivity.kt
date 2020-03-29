@@ -1,10 +1,12 @@
 package com.laam.firebasechatfcm.ui
 
+import android.app.Activity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.github.dhaval2404.imagepicker.ImagePicker
 import com.laam.firebasechatfcm.firebase.MessageEvent
 import com.laam.firebasechatfcm.R
 import com.laam.firebasechatfcm.adapter.DetailAdapter
@@ -14,6 +16,9 @@ import com.laam.firebasechatfcm.network.ServiceBuilder
 import com.laam.firebasechatfcm.response.DetailResponse
 import com.laam.firebasechatfcm.response.SendMessageResponse
 import kotlinx.android.synthetic.main.activity_detail_chat.*
+import okhttp3.MediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -23,7 +28,7 @@ import retrofit2.Response
 
 class DetailChatActivity : AppCompatActivity() {
     val TAG = "DetailChatActivity";
-    var adapter = DetailAdapter(listOf())
+    var adapter = DetailAdapter(mutableListOf())
     var headerID = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,6 +68,46 @@ class DetailChatActivity : AppCompatActivity() {
                 }
             })
         }
+
+        btn_send_library.setOnClickListener {
+            ImagePicker.with(this)
+                .compress(512)
+                .start { resultCode, data ->
+                    if (resultCode == Activity.RESULT_OK) {
+                        val file = ImagePicker.getFile(data)!!
+
+                        ServiceBuilder.buildService(Api::class.java)
+                            .sendMessageWithImage(
+                                MultipartBody.Part.createFormData(
+                                    "imageFile",
+                                    file.name,
+                                      RequestBody.create(MediaType.parse("multipart/form-file"), file)
+                                ),
+                                headerID,
+                                id
+                            )
+                            .enqueue(object : Callback<SendMessageResponse> {
+                                override fun onFailure(call: Call<SendMessageResponse>, t: Throwable) {
+                                    Log.d(TAG, "onFailure: ${t.message}")
+                                }
+
+                                override fun onResponse(
+                                    call: Call<SendMessageResponse>,
+                                    response: Response<SendMessageResponse>
+                                ) {
+                                    response.body()?.let {
+                                        Toast.makeText(this@DetailChatActivity, it.message, Toast.LENGTH_SHORT)
+                                            .show()
+                                        updateList(it.result)
+                                    }
+                                    Log.d(TAG, "onErrorResponse: ${response.errorBody()?.string().toString()}")
+                                }
+                            })
+                    } else {
+                        Toast.makeText(this, "task cancelled", Toast.LENGTH_SHORT).show()
+                    }
+                }
+        }
     }
 
     private fun refreshRv() {
@@ -93,10 +138,8 @@ class DetailChatActivity : AppCompatActivity() {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(messageEvent: MessageEvent) {
-        if(messageEvent.data["type"] == "personal_message"){
-            Toast.makeText(this, "msg : ${messageEvent.data}", Toast.LENGTH_SHORT).show()
-            refreshRv()
-        }
+        Toast.makeText(this, "msg : ${messageEvent.data}", Toast.LENGTH_SHORT).show()
+        refreshRv()
     }
 
     override fun onDestroy() {

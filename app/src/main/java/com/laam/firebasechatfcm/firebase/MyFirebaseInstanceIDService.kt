@@ -25,12 +25,13 @@ class MyFirebaseInstanceIDService : FirebaseMessagingService() {
         remoteMessage.data.isNotEmpty().let {
             Log.d(TAG, "Message data payload: " + remoteMessage.data)
 
-            EventBus.getDefault().post(
-                MessageEvent(
-                    remoteMessage.data
+            if (remoteMessage.data["type"] == "personal_message") {
+                EventBus.getDefault().post(
+                    MessageEvent(
+                        remoteMessage.data
+                    )
                 )
-            )
-
+            }
         }
 
         // Check if message contains a notification payload.

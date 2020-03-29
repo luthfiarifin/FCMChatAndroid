@@ -17,10 +17,12 @@
         android:src="@mipmap/ic_launcher"
         android:text="Name" />
 
-    <TextView
-        android:id="@+id/tv_detail_receiver_text"
+    <ImageView
+        android:id="@+id/img_detail_receiver_image"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="100dp"
+        android:src="@mipmap/ic_launcher"
+        android:scaleType="fitStart"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="50dp"
         android:gravity="center_vertical"
