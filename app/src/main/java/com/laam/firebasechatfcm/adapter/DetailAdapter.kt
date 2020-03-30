@@ -111,4 +111,10 @@ class DetailAdapter(
         list.addAll(newList)
         notifyItemRangeInserted(curSize, list.size)
     }
+
+    fun addItem(newItem: DetailResponse) {
+        val curSize = list.size
+        list.add(newItem)
+        notifyItemRangeInserted(curSize, list.size)
+    }
 }

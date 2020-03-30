@@ -7,6 +7,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.dhaval2404.imagepicker.ImagePicker
+import com.google.gson.GsonBuilder
 import com.laam.firebasechatfcm.firebase.MessageEvent
 import com.laam.firebasechatfcm.R
 import com.laam.firebasechatfcm.adapter.DetailAdapter
@@ -22,6 +23,7 @@ import okhttp3.RequestBody
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -61,9 +63,8 @@ class DetailChatActivity : AppCompatActivity() {
                     response: Response<SendMessageResponse>
                 ) {
                     response.body()?.let {
-                        Toast.makeText(this@DetailChatActivity, it.message, Toast.LENGTH_SHORT)
-                            .show()
-                        updateList(it.result)
+                        addList(it.result)
+                        Log.d(TAG, "${it.result}")
                     }
                 }
             })
@@ -96,9 +97,8 @@ class DetailChatActivity : AppCompatActivity() {
                                     response: Response<SendMessageResponse>
                                 ) {
                                     response.body()?.let {
-                                        Toast.makeText(this@DetailChatActivity, it.message, Toast.LENGTH_SHORT)
-                                            .show()
-                                        updateList(it.result)
+                                        Log.d(TAG, "${it.result}")
+                                        addList(it.result)
                                     }
                                     Log.d(TAG, "onErrorResponse: ${response.errorBody()?.string().toString()}")
                                 }
@@ -136,10 +136,18 @@ class DetailChatActivity : AppCompatActivity() {
         rv_detail.scrollTo(0, adapter.itemCount - 1)
     }
 
+    fun addList(item: DetailResponse) {
+        adapter.addItem(item)
+
+        rv_detail.scrollToPosition(adapter.itemCount - 1)
+        rv_detail.scrollTo(0, adapter.itemCount - 1)
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(messageEvent: MessageEvent) {
-        Toast.makeText(this, "msg : ${messageEvent.data}", Toast.LENGTH_SHORT).show()
-        refreshRv()
+        val detailResponse = GsonBuilder().create()
+            .fromJson(messageEvent.data["body"].toString(), DetailResponse::class.java)
+        addList(detailResponse)
     }
 
     override fun onDestroy() {
